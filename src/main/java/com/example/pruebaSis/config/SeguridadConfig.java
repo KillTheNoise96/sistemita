@@ -6,6 +6,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -20,7 +21,12 @@ public class SeguridadConfig {
 
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        return new InMemoryUserDetailsManager(User.withDefaultPasswordEncoder().username(usuario).password(clave).build());
+        UserDetails userDetails = User.withDefaultPasswordEncoder().
+                username(usuario).
+                password(clave).
+                roles("ADMIN").
+                build();
+        return new InMemoryUserDetailsManager(userDetails);
     }
 
     @Bean
@@ -28,7 +34,7 @@ public class SeguridadConfig {
         return http.csrf().
                 disable().
                 authorizeRequests().
-                antMatchers("/lista").
+                antMatchers("/clientes/lista").
                 permitAll().
                 anyRequest().
                 authenticated().
